@@ -39,6 +39,7 @@ import { fetchAddressByUserIdAsync } from "./features/address/AddressSlice";
 import { AdminDashboardPage } from "./pages/AdminDashboardPage";
 import { fetchWishlistByUserIdAsync } from "./features/wishlist/WishlistSlice";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import MappedinMap from "./pages/map";
 
 function App() {
   const dispatch = useDispatch();
@@ -215,6 +216,15 @@ function App() {
             element={
               // <Protected>
               <ProductDetailsPage />
+              // </Protected>
+            }
+          />
+          <Route
+            exact
+            path="/map"
+            element={
+              // <Protected>
+              <MappedinMap />
               // </Protected>
             }
           />
