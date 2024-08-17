@@ -8,14 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Badge,
-  Button,
-  Chip,
-  Stack,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Badge, Button, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserInfo } from "../../user/UserSlice";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -143,7 +136,7 @@ export const Navbar = ({ isProductList = false }) => {
               </MenuItem>
             )}
             {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
+              <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
                 <Typography
                   component={Link}
                   color={"text.primary"}
@@ -162,6 +155,20 @@ export const Navbar = ({ isProductList = false }) => {
               : `Hey👋, ${userInfo?.name}`}
           </Typography>
           {loggedInUser.isAdmin && <Button variant="contained">Admin</Button>}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/map")}
+          >
+            Go to Map
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate("/shop")}
+          >
+            Shop
+          </Button>
           <Stack
             sx={{
               flexDirection: "row",
