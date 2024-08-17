@@ -99,7 +99,7 @@ export const Navbar = ({ isProductList = false }) => {
             textDecoration: "none",
           }}
         >
-          MERN SHOP
+          NAV&SHOP
         </Typography>
 
         <Stack
