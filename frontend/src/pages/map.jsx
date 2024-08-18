@@ -7,6 +7,8 @@ import {
   Container,
   CircularProgress,
 } from "@mui/material";
+import { Navbar } from "../features/navigation/components/Navbar";
+import { Footer } from "../features/footer/Footer";
 
 const MappedinMap = () => {
   const [loading, setLoading] = useState(true);
@@ -17,6 +19,7 @@ const MappedinMap = () => {
 
   return (
     <Container>
+      <Navbar></Navbar>
       <Typography
         variant="h3"
         component="h1"
@@ -99,6 +102,7 @@ const MappedinMap = () => {
           </Box>
         </CardContent>
       </Card>
+      <Footer></Footer>
     </Container>
   );
 };
