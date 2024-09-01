@@ -4,6 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import React, { useState } from "react";
 import {
   LoginPage,
   SignupPage,
@@ -22,6 +23,9 @@ import {
   WishlistPage,
   OtpVerificationPage,
 } from "./pages";
+import QRCodeComponent from "./pages/QRCodeComponent";
+import OrderForm from "./pages/food";
+import ScanOrder from "./pages/scanOrder";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -45,6 +49,13 @@ function App() {
   const dispatch = useDispatch();
   const isAuthChecked = useSelector(selectIsAuthChecked);
   const loggedInUser = useSelector(selectLoggedInUser);
+  const [order, setOrder] = useState(null);
+  const [orderPlaced, setOrderPlaced] = useState(false);
+
+  const handleOrderSubmit = (order) => {
+    setOrder(order);
+    setOrderPlaced(true);
+  };
 
   useEffect(() => {
     dispatch(checkAuthAsync());
@@ -226,6 +237,21 @@ function App() {
               // <Protected>
               <MappedinMap />
               // </Protected>
+            }
+          />
+          <Route
+            exact
+            path="/food"
+            element={
+              !orderPlaced ? (
+                <OrderForm onOrderSubmit={handleOrderSubmit} />
+              ) : (
+                <>
+                  <QRCodeComponent order={order} />
+                  <hr />
+                  {/* <ScanOrder /> */}
+                </>
+              )
             }
           />
         </Routes>

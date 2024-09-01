@@ -27,8 +27,8 @@ const MappedinMap = () => {
         sx={{
           fontWeight: "bold",
           textAlign: "center",
-          mt: 4, // Margin top for spacing
-          mb: 4, // Margin bottom for spacing
+          mt: 4,
+          mb: 4,
         }}
       >
         Welcome to Our Interactive Map
