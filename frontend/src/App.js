@@ -239,21 +239,20 @@ function App() {
               // </Protected>
             }
           />
-          <Route
-            exact
-            path="/food"
-            element={
-              !orderPlaced ? (
-                <OrderForm onOrderSubmit={handleOrderSubmit} />
-              ) : (
-                <>
-                  <QRCodeComponent order={order} />
-                  <hr />
-                  {/* <ScanOrder /> */}
-                </>
-              )
-            }
-          />
+<Route
+  exact
+  path="/food"
+  element={
+    !orderPlaced ? (
+      <OrderForm onOrderSubmit={handleOrderSubmit} />
+    ) : (
+      <>
+        <QRCodeComponent order={order} />
+      </>
+    )
+  }
+/>
+
         </Routes>
       )}
     </Router>
