@@ -26,6 +26,7 @@ import {
 import QRCodeComponent from "./pages/QRCodeComponent";
 import OrderForm from "./pages/food";
 import ScanOrder from "./pages/scanOrder";
+import ShopMenu from "./pages/shopMenu";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -239,20 +240,14 @@ function App() {
               // </Protected>
             }
           />
-<Route
-  exact
-  path="/food"
-  element={
-    !orderPlaced ? (
-      <OrderForm onOrderSubmit={handleOrderSubmit} />
-    ) : (
-      <>
-        <QRCodeComponent order={order} />
-      </>
-    )
-  }
-/>
 
+          <Route path="/shop/:id" element={<ShopMenu />} />
+          <Route
+            exact
+            path="/food"
+            element={<OrderForm onOrderSubmit={handleOrderSubmit} />}
+          />
+          <Route path="/qr-code" element={<QRCodeComponent />} />
         </Routes>
       )}
     </Router>
