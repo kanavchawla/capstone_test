@@ -101,23 +101,16 @@ const ShopMenu = () => {
 
       const data = await response.json();
 
-      // Set the order data and navigate to the QR code page
+      // Set the order data
       setOrderData({
         orderId: data.foodOrder._id,
         shopId: id,
         userId: userInfo._id,
       });
 
-      // Navigate to the QR code page and pass the order data via state
-      navigate("/qr-code", {
-        state: {
-          orderData: {
-            orderId: data.foodOrder._id,
-            shopId: id,
-            userId: userInfo._id,
-          },
-        },
-      });
+      // Navigate to the QR code page and pass the order data in the URL
+      const qrCodeURL = `/qr-code?orderId=${data.foodOrder._id}&shopId=${id}&userId=${userInfo._id}`;
+      navigate(qrCodeURL);
 
       setCart({});
     } catch (err) {

@@ -45,6 +45,7 @@ import { AdminDashboardPage } from "./pages/AdminDashboardPage";
 import { fetchWishlistByUserIdAsync } from "./features/wishlist/WishlistSlice";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import MappedinMap from "./pages/map";
+import ScanResult from "./pages/ScanResult";
 
 function App() {
   const dispatch = useDispatch();
@@ -248,6 +249,7 @@ function App() {
             element={<OrderForm onOrderSubmit={handleOrderSubmit} />}
           />
           <Route path="/qr-code" element={<QRCodeComponent />} />
+          <Route path="/scan-result" element={<ScanResult />} />
         </Routes>
       )}
     </Router>
