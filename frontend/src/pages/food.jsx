@@ -1,74 +1,98 @@
-import React, { useState } from "react";
-import { Button, Typography, Grid, Box } from "@mui/material";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Grid,
+  Box,
+  CircularProgress,
+  Container,
+} from "@mui/material";
+import { Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectUserInfo } from '../features/user/UserSlice';
+import { selectUserInfo } from "../features/user/UserSlice";
 
-const OrderForm = ({ onOrderSubmit }) => {
-  const [order, setOrder] = useState([]);
+const ShopDetails = () => {
+  const [shops, setShops] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Add navigation hook
 
-  // Access the user info from Redux store
-  const userInfo = useSelector(selectUserInfo);
-
-  const handleAddItem = (item, quantity) => {
-    setOrder([...order, { item, quantity }]);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const userId = userInfo._id; // Assuming you're getting this from Redux or context
-      const response = await axios.post("http://localhost:8000/food-orders", {
-        userId,
-        items: order,
-      });
-  
-      if (response.status === 201) {
-        console.log("Order placed successfully", response.data);
-        onOrderSubmit(response.data.foodOrder); // Pass the entire order object to the QR code component
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/shops");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setShops(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error placing order:", error);
-    }
-  };
-  
-  
+    };
+
+    fetchShops();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Alert severity="error">{error}</Alert>
+      </Container>
+    );
+  }
 
   return (
-    <Box
-      sx={{
-        p: 3,
-        maxWidth: 400,
-        margin: "auto",
-        textAlign: "center",
-        backgroundColor: "#f9f9f9",
-        borderRadius: 2,
-      }}
-    >
-      <Typography variant="h4" component="h2" gutterBottom>
-        Place Your Order
+    <Container>
+      <Typography variant="h4" align="center" gutterBottom>
+        Explore Restaurants
       </Typography>
-      <Grid container spacing={2} justifyContent="center" sx={{ mb: 3 }}>
-        <Grid item>
-          <Button variant="contained" color="primary" onClick={() => handleAddItem("Pizza", 1)}>
-            Add Pizza
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="secondary" onClick={() => handleAddItem("Burger", 1)}>
-            Add Burger
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="success" onClick={() => handleAddItem("Soda", 1)}>
-            Add Soda
-          </Button>
-        </Grid>
+
+      <Grid container spacing={4}>
+        {shops.map((shop) => (
+          <Grid item key={shop._id} xs={12} sm={6} md={4}>
+            <Card
+              onClick={() => navigate(`/shop/${shop._id}`)} // Redirect on card click
+              style={{ cursor: "pointer" }} // Make card clickable
+            >
+              <CardMedia
+                component="img"
+                height="140"
+                image={`https://via.placeholder.com/250?text=${shop.name}`}
+                alt={shop.name}
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {shop.name}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {shop.location}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
-        Submit Order
-      </Button>
-    </Box>
+    </Container>
   );
 };
 
-export default OrderForm;
+export default ShopDetails;

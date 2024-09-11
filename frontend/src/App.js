@@ -26,6 +26,7 @@ import {
 import QRCodeComponent from "./pages/QRCodeComponent";
 import OrderForm from "./pages/food";
 import ScanOrder from "./pages/scanOrder";
+import ShopMenu from "./pages/shopMenu";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -44,6 +45,7 @@ import { AdminDashboardPage } from "./pages/AdminDashboardPage";
 import { fetchWishlistByUserIdAsync } from "./features/wishlist/WishlistSlice";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import MappedinMap from "./pages/map";
+import ScanResult from "./pages/ScanResult";
 
 function App() {
   const dispatch = useDispatch();
@@ -239,20 +241,15 @@ function App() {
               // </Protected>
             }
           />
-<Route
-  exact
-  path="/food"
-  element={
-    !orderPlaced ? (
-      <OrderForm onOrderSubmit={handleOrderSubmit} />
-    ) : (
-      <>
-        <QRCodeComponent order={order} />
-      </>
-    )
-  }
-/>
 
+          <Route path="/shop/:id" element={<ShopMenu />} />
+          <Route
+            exact
+            path="/food"
+            element={<OrderForm onOrderSubmit={handleOrderSubmit} />}
+          />
+          <Route path="/qr-code" element={<QRCodeComponent />} />
+          <Route path="/scan-result" element={<ScanResult />} />
         </Routes>
       )}
     </Router>
