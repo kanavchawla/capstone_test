@@ -16,6 +16,8 @@ const shopSchema = new Schema({
       price: { type: Number, required: true },
     },
   ],
+  secret: { type: String, required: true } // Ensure this field is required
 });
+
 
 module.exports = mongoose.model("Shop", shopSchema);

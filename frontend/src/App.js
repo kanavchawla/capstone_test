@@ -46,6 +46,9 @@ import { fetchWishlistByUserIdAsync } from "./features/wishlist/WishlistSlice";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import MappedinMap from "./pages/map";
 import ScanResult from "./pages/ScanResult";
+import theme from './pages/theme';
+import { ThemeProvider } from '@mui/material/styles';
+import AdminDashboard from "./pages/adminFood";
 
 function App() {
   const dispatch = useDispatch();
@@ -250,6 +253,7 @@ function App() {
           />
           <Route path="/qr-code" element={<QRCodeComponent />} />
           <Route path="/scan-result" element={<ScanResult />} />
+          <Route path="/admin/food-dashboard" element={<AdminDashboard />} /> 
         </Routes>
       )}
     </Router>

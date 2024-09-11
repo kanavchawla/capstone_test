@@ -91,6 +91,7 @@ server.post("/food-orders", async (req, res) => {
   }
 });
 
+
 // Get a specific food order with shop details
 server.get("/food-orders/:orderId", async (req, res) => {
   try {
@@ -113,9 +114,9 @@ server.get("/food-orders/:orderId", async (req, res) => {
 server.patch("/food-orders/:orderId/status", async (req, res) => {
   try {
     const { orderId } = req.params;
-    const { status } = req.body;
+    const { status, shopSecret } = req.body; // Get the shopSecret from request body
 
-    // Validate that status is one of the allowed values
+    // Validate the status is one of the allowed values
     const allowedStatuses = [
       "pending",
       "confirmed",
@@ -127,21 +128,28 @@ server.patch("/food-orders/:orderId/status", async (req, res) => {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const order = await FoodOrder.findByIdAndUpdate(
-      orderId,
-      { status },
-      { new: true } // Return the updated document
-    );
+    // Find the order by ID and populate the shop
+    const order = await FoodOrder.findById(orderId).populate("shop");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    res.status(200).json({ message: "Order status updated", order });
+    // Verify that the shop secret matches
+    if (order.shop.secret !== shopSecret) {
+      return res.status(403).json({ message: "Unauthorized to update this order" });
+    }
+
+    // Update the order status
+    order.status = status;
+    const updatedOrder = await order.save();
+
+    res.status(200).json({ message: "Order status updated successfully", order: updatedOrder });
   } catch (error) {
     res.status(500).json({ message: "Error updating order status", error });
   }
 });
+
 
 // Root route
 server.get("/", (req, res) => {
@@ -162,6 +170,18 @@ server.get("/orders/:shopId/:orderId", async (req, res) => {
     res.status(200).json(order);
   } catch (error) {
     res.status(500).json({ message: "Error fetching order", error });
+  }
+});
+
+server.get("/food-orders", async (req, res) => {
+  try {
+    const orders = await FoodOrder.find()
+      .populate("user", "firstname lastname email")
+      .populate("shop", "name location");
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching orders", error });
   }
 });
 

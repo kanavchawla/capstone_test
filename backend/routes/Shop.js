@@ -6,16 +6,21 @@ const Shop = require("../models/Shop");
 // @desc     Create a new shop
 router.post("/", async (req, res) => {
   try {
-    const { name, location, menu } = req.body;
+    const { name, location, menu, secret } = req.body;
+
+    // Check if all required fields are present
+    if (!name || !location || !menu || !secret) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
     // Create a new shop
     const newShop = new Shop({
       name,
       location,
-      menu, // This should correctly save the array to MongoDB
+      menu,
+      secret,
     });
 
-    // Save the shop to the database
     const savedShop = await newShop.save();
 
     res.status(201).json({
@@ -23,9 +28,11 @@ router.post("/", async (req, res) => {
       shop: savedShop,
     });
   } catch (error) {
+    console.error("Error creating shop:", error); // Log error details
     res.status(500).json({ message: "Error creating shop", error });
   }
 });
+
 
 // @route    GET /shops
 // @desc     Get all shops
