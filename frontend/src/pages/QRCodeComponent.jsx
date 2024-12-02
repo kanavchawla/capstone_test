@@ -35,37 +35,62 @@ const QRCodePage = () => {
 
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [statusLoading, setStatusLoading] = useState(true); // New state for status loading
   const [error, setError] = useState(null);
   const [orderStatus, setOrderStatus] = useState(0); // For tracking order status (index for Stepper)
 
   useEffect(() => {
-    // Fetch order details by orderId
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8000/food-orders/${orderId}`
-        );
+        const response = await fetch(`http://localhost:8000/orders/${shopId}/${orderId}`);
         if (!response.ok) {
           throw new Error(`Error fetching order: ${response.status}`);
         }
         const data = await response.json();
         setOrderDetails(data);
 
+        // Fetch the status from the new endpoint
+        const statusResponse = await fetch(`http://localhost:8000/status/${orderId}`);
+        if (!statusResponse.ok) {
+          throw new Error(`Error fetching status: ${statusResponse.status}`);
+        }
+        const statusData = await statusResponse.json();
+        
         // Map string status to index
-        const statusIndex = orderStages.indexOf(data.status);
+        const statusIndex = orderStages.indexOf(statusData.status);
         setOrderStatus(statusIndex === -1 ? 0 : statusIndex); // Default to 0 if status is invalid
 
         setLoading(false);
+        setStatusLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
+        setStatusLoading(false);
       }
     };
 
     if (orderId) {
       fetchOrderDetails();
+
+      // Polling for status updates
+      const intervalId = setInterval(async () => {
+        try {
+          const statusResponse = await fetch(`http://localhost:8000/status/${orderId}`);
+          if (!statusResponse.ok) {
+            throw new Error(`Error fetching status: ${statusResponse.status}`);
+          }
+          const statusData = await statusResponse.json();
+          const statusIndex = orderStages.indexOf(statusData.status);
+          setOrderStatus(statusIndex === -1 ? 0 : statusIndex);
+        } catch (err) {
+          setError(err.message);
+        }
+      }, 5000); // Poll every 5 seconds
+
+      // Cleanup interval on component unmount
+      return () => clearInterval(intervalId);
     }
-  }, [orderId]);
+  }, [orderId, shopId]);
 
   const calculateTotalAmount = () => {
     if (!orderDetails) return 0;
@@ -75,7 +100,7 @@ const QRCodePage = () => {
     );
   };
 
-  if (loading) {
+  if (loading || statusLoading) {
     return (
       <Box
         display="flex"
@@ -136,8 +161,7 @@ const QRCodePage = () => {
                   fontWeight: index === orderStatus ? "bold" : "normal",
                 }}
               >
-                {label.charAt(0).toUpperCase() + label.slice(1)}{" "}
-                {/* Capitalize first letter */}
+                {label.charAt(0).toUpperCase() + label.slice(1)} {/* Capitalize first letter */}
               </StepLabel>
             </HighlightedStep>
           ))}

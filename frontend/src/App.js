@@ -47,7 +47,8 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import MappedinMap from "./pages/map";
 import ScanResult from "./pages/ScanResult";
 import theme from './pages/theme';
-import { ThemeProvider } from '@mui/material/styles';
+// import { ThemeProvider } from '@mui/material/styles';
+import Parking3D from "./pages/parking";
 import AdminDashboard from "./pages/adminFood";
 
 function App() {
@@ -254,6 +255,7 @@ function App() {
           <Route path="/qr-code" element={<QRCodeComponent />} />
           <Route path="/scan-result" element={<ScanResult />} />
           <Route path="/admin/food-dashboard" element={<AdminDashboard />} /> 
+          <Route path="/parking" element={<Parking3D />} /> 
         </Routes>
       )}
     </Router>

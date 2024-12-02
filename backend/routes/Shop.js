@@ -104,4 +104,22 @@ router.delete("/:shopId", async (req, res) => {
   }
 });
 
+router.post("/verify-secret", async (req, res) => {
+  try {
+    const { shopSecret } = req.body;
+
+    // Find shop by secret
+    const shop = await Shop.findOne({ secret: shopSecret });
+
+    if (!shop) {
+      return res.status(401).json({ message: "Invalid shop secret" });
+    }
+
+    res.status(200).json({ success: true, shopId: shop._id });
+  } catch (error) {
+    res.status(500).json({ message: "Error verifying shop secret", error });
+  }
+});
+
+
 module.exports = router;
