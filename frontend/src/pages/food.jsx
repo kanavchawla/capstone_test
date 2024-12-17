@@ -13,6 +13,8 @@ import { Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUserInfo } from "../features/user/UserSlice";
+import { Navbar } from "../features/navigation/components/Navbar";
+import { Footer } from "../features/footer/Footer";
 
 const ShopDetails = () => {
   const [shops, setShops] = useState([]);
@@ -62,6 +64,7 @@ const ShopDetails = () => {
 
   return (
     <Container>
+      <Navbar></Navbar>
       <Typography variant="h4" align="center" gutterBottom>
         Explore Restaurants
       </Typography>

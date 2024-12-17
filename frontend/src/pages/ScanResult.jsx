@@ -1,48 +1,65 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, Button } from "@mui/material";
+import { QrReader } from "react-qr-reader"; // Corrected import
 
-const ScanResult = () => {
-  const [searchParams] = useSearchParams();
-  const orderId = searchParams.get("orderId");
-  const shopId = searchParams.get("shopId");
-  const userId = searchParams.get("userId");
-  const [orderData, setOrderData] = useState(null);
-  const [error, setError] = useState(null);
+const QRScanner = () => {
+  const navigate = useNavigate(); // Use navigate hook
+  const [scannedData, setScannedData] = useState(null); // To store the scanned QR code data
+  const [isScanning, setIsScanning] = useState(true); // To check if the scanner is scanning
 
-  useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/orders/${orderId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch order details.");
-        }
-        const data = await response.json();
-        setOrderData(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-    if (orderId) {
-      fetchOrderDetails();
+  // Handle the result after scanning the QR code
+  const handleScan = (data) => {
+    if (data) {
+      setScannedData(JSON.parse(data)); // Store the scanned QR code data
+      setIsScanning(false); // Stop scanning after getting the data
     }
-  }, [orderId]);
+  };
+
+  // Handle error during scan
+  const handleError = (err) => {
+    console.error(err);
+  };
+
+  // Navigate to order details page after QR code scan
+  const redirectToOrderDetails = () => {
+    if (scannedData) {
+      const { orderId, shopId, userId } = scannedData;
+      navigate(`/order-details/${orderId}?shopId=${shopId}&userId=${userId}`);
+    }
+  };
 
   return (
-    <div>
-      {error && <div>Error: {error}</div>}
-      {orderData ? (
-        <div>
-          <h1>Order ID: {orderData._id}</h1>
-          <p>Shop ID: {shopId}</p>
-          <p>User ID: {userId}</p>
-          {/* Render more order details here */}
-        </div>
+    <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
+      <Typography variant="h4" gutterBottom>
+        Scan Your QR Code
+      </Typography>
+
+      {isScanning ? (
+        <QrReader
+          delay={300}
+          style={{ width: "100%", maxWidth: 400 }}
+          onResult={(result, error) => {
+            if (result) {
+              handleScan(result?.text); // Call handleScan when QR code is scanned
+            }
+            if (error) {
+              handleError(error); // Handle any error during scan
+            }
+          }}
+        />
       ) : (
-        <div>Loading...</div>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Typography variant="h6" gutterBottom>
+            QR Code Scanned Successfully!
+          </Typography>
+          <Button variant="contained" color="primary" onClick={redirectToOrderDetails}>
+            View Order Details
+          </Button>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
-export default ScanResult;
+export default QRScanner;

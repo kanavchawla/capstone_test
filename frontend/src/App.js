@@ -28,6 +28,7 @@ import OrderForm from "./pages/food";
 import ScanOrder from "./pages/scanOrder";
 import ShopMenu from "./pages/shopMenu";
 import { useEffect } from "react";
+import AllOrdersPage from "./pages/AllOrderPage";
 import { useDispatch, useSelector } from "react-redux";
 import {
   checkAuthAsync,
@@ -46,10 +47,12 @@ import { fetchWishlistByUserIdAsync } from "./features/wishlist/WishlistSlice";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import MappedinMap from "./pages/map";
 import ScanResult from "./pages/ScanResult";
+import OrderDetails from "./pages/orderDetailsPage"
 import theme from './pages/theme';
 // import { ThemeProvider } from '@mui/material/styles';
 import Parking3D from "./pages/parking";
 import AdminDashboard from "./pages/adminFood";
+import OrderDetailsPage from "./pages/orderDetailsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -256,6 +259,9 @@ function App() {
           <Route path="/scan-result" element={<ScanResult />} />
           <Route path="/admin/food-dashboard" element={<AdminDashboard />} /> 
           <Route path="/parking" element={<Parking3D />} /> 
+          <Route path="/all-orders" element={<AllOrdersPage />} />
+          <Route path="/order-details/:orderId/:shopId" element={<OrderDetailsPage />} />
+          {/* <Route path="/order-details/:orderId" element={<OrderDetails />} /> */}
         </Routes>
       )}
     </Router>

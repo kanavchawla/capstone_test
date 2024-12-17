@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const mongoose=require('mongoose')
 
 // Import Routes
 const authRoutes = require("./routes/Auth");
@@ -56,6 +57,34 @@ server.use("/reviews", reviewRoutes);
 server.use("/wishlist", wishlistRoutes);
 server.use("/shops", shopRoutes); // Use shop routes
 // Route to verify the shop secret
+
+
+
+const sensorSchema = new mongoose.Schema({
+  distance: Number,
+  timestamp: Number, // Time in seconds
+});
+
+const SensorData = mongoose.model("SensorData", sensorSchema);
+
+
+server.post("/update", async (req, res) => {
+  try {
+    const { distance, timestamp } = req.body;
+
+    const newData = new SensorData({ distance, timestamp });
+    await newData.save();
+
+    res.status(200).send("Data saved successfully!");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error saving data.");
+  }
+});
+
+
+
+
 server.post("/shops/verify-secret", async (req, res) => {
   try {
     const { shopSecret } = req.body;
@@ -293,6 +322,34 @@ server.delete('/slots/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+// Get all orders for a specific user
+server.get("/food-orders/user/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate user existence
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Fetch all orders for the user
+    const orders = await FoodOrder.find({ user: userId })
+      .populate("shop", "name location") // Populate shop details
+      .populate("user", "firstname lastname email"); // Optional: Populate user details
+
+    if (orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching user's orders:", error);
+    res.status(500).json({ message: "Error fetching orders", error });
+  }
+});
+
 
 // Start server
 const PORT = process.env.PORT || 8000;

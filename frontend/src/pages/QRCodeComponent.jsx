@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import {
   Container,
@@ -138,7 +138,7 @@ const QRCodePage = () => {
           Your Order QR Code
         </Typography>
         <QRCodeCanvas
-          value={JSON.stringify({ orderId, shopId, userId })}
+          value={`http://localhost:3000/order-details/${orderId}/${shopId}`} // Updated QR code URL
           size={256}
         />
         <Typography mt={2}>

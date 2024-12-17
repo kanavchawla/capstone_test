@@ -169,6 +169,13 @@ export const Navbar = ({ isProductList = false }) => {
           >
             Shop
           </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate("/food")}
+          >
+            FoodCourt
+          </Button>
           <Stack
             sx={{
               flexDirection: "row",
@@ -194,11 +201,11 @@ export const Navbar = ({ isProductList = false }) => {
                 </Badge>
               </Stack>
             )}
-            {isProductList && (
+            {/* {isProductList && (
               <IconButton onClick={handleToggleFilters}>
                 <TuneIcon sx={{ color: isProductFilterOpen ? "black" : "" }} />
               </IconButton>
-            )}
+            )} */}
           </Stack>
         </Stack>
       </Toolbar>
