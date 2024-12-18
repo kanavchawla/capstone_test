@@ -55,6 +55,7 @@ import AdminDashboard from "./pages/adminFood";
 import OrderDetailsPage from "./pages/orderDetailsPage";
 import UserForm from "./pages/parking/UserForm";
 import SlotSelector from "./pages/parking/SlotSelector";
+import Chatbot from "./pages/Chatbot.jsx";
 
 import { Grid } from "@mui/material";
 
@@ -96,209 +97,212 @@ function App() {
     setParkingUser(userData);
   };
   return (
-    <Router>
-      {true && (
-        <Routes>
-          {/* public routes */}
-          <Route exact path="/signup" element={<SignupPage />} />
-          <Route exact path="/login" element={<LoginPage />} />
-          <Route exact path="/verify-otp" element={<OtpVerificationPage />} />
-          <Route
-            exact
-            path="/forgot-password"
-            element={<ForgotPasswordPage />}
-          />
-          <Route
-            exact
-            path="/reset-password/:userId/:passwordResetToken"
-            element={<ResetPasswordPage />}
-          />
+    <>
+      <Chatbot />
+      <Router>
+        {true && (
+          <Routes>
+            {/* public routes */}
+            <Route exact path="/signup" element={<SignupPage />} />
+            <Route exact path="/login" element={<LoginPage />} />
+            <Route exact path="/verify-otp" element={<OtpVerificationPage />} />
+            <Route
+              exact
+              path="/forgot-password"
+              element={<ForgotPasswordPage />}
+            />
+            <Route
+              exact
+              path="/reset-password/:userId/:passwordResetToken"
+              element={<ResetPasswordPage />}
+            />
 
-          {loggedInUser?.isAdmin ? (
-            // admin routes
-            <>
-              <Route
-                exact
-                path="/admin/dashboard"
-                element={
-                  <Protected>
-                    <AdminDashboardPage />
-                  </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/admin/product-update/:id"
-                element={
-                  <Protected>
-                    <ProductUpdatePage />
-                  </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/admin/add-product"
-                element={
-                  <Protected>
-                    <AddProductPage />
-                  </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/admin/orders"
-                element={
-                  <Protected>
-                    <AdminOrdersPage />
-                  </Protected>
-                }
-              />
-              <Route
-                exact
-                path="*"
-                element={<Navigate to={"/admin/dashboard"} />}
-              />
-            </>
-          ) : (
-            // user routes
-            <>
-              <Route
-                exact
-                path="/"
-                element={
-                  <Protected>
-                    <HomePage />
-                  </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/cart"
-                element={
-                  // <Protected>
-                  <CartPage />
-                  // </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/profile"
-                element={
-                  // <Protected>
-                  <UserProfilePage />
-                  // </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/checkout"
-                element={
-                  // <Protected>
-                  <CheckoutPage />
-                  // </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/order-success/:id"
-                element={
-                  // <Protected>
-                  <OrderSuccessPage />
-                  // </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/orders"
-                element={
-                  // <Protected>
-                  <UserOrdersPage />
-                  // </Protected>
-                }
-              />
-              <Route
-                exact
-                path="/wishlist"
-                element={
-                  // <Protected>
-                  <WishlistPage />
-                  // </Protected>
-                }
-              />
-              <Route exact path="*" element={<NotFoundPage />} />
-            </>
-          )}
+            {loggedInUser?.isAdmin ? (
+              // admin routes
+              <>
+                <Route
+                  exact
+                  path="/admin/dashboard"
+                  element={
+                    <Protected>
+                      <AdminDashboardPage />
+                    </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/admin/product-update/:id"
+                  element={
+                    <Protected>
+                      <ProductUpdatePage />
+                    </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/admin/add-product"
+                  element={
+                    <Protected>
+                      <AddProductPage />
+                    </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/admin/orders"
+                  element={
+                    <Protected>
+                      <AdminOrdersPage />
+                    </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="*"
+                  element={<Navigate to={"/admin/dashboard"} />}
+                />
+              </>
+            ) : (
+              // user routes
+              <>
+                <Route
+                  exact
+                  path="/"
+                  element={
+                    <Protected>
+                      <HomePage />
+                    </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/cart"
+                  element={
+                    // <Protected>
+                    <CartPage />
+                    // </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/profile"
+                  element={
+                    // <Protected>
+                    <UserProfilePage />
+                    // </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/checkout"
+                  element={
+                    // <Protected>
+                    <CheckoutPage />
+                    // </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/order-success/:id"
+                  element={
+                    // <Protected>
+                    <OrderSuccessPage />
+                    // </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/orders"
+                  element={
+                    // <Protected>
+                    <UserOrdersPage />
+                    // </Protected>
+                  }
+                />
+                <Route
+                  exact
+                  path="/wishlist"
+                  element={
+                    // <Protected>
+                    <WishlistPage />
+                    // </Protected>
+                  }
+                />
+                <Route exact path="*" element={<NotFoundPage />} />
+              </>
+            )}
 
-          <Route
-            exact
-            path="/parking"
-            element={
-              !parkingUser ? (
-                <UserForm onRegister={handleUserSubmit} />
-              ) : (
-                <SlotSelector parkingUser={parkingUser} />
-              )
-            }
-          />
-          <Route
-            exact
-            path="/slot-selection"
-            element={<SlotSelector parkingUser={parkingUser} />}
-          />
-          <Route
-            exact
-            path="/user-form"
-            element={<UserForm onRegister={handleUserSubmit} />}
-          />
+            <Route
+              exact
+              path="/parking"
+              element={
+                !parkingUser ? (
+                  <UserForm onRegister={handleUserSubmit} />
+                ) : (
+                  <SlotSelector parkingUser={parkingUser} />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/slot-selection"
+              element={<SlotSelector parkingUser={parkingUser} />}
+            />
+            <Route
+              exact
+              path="/user-form"
+              element={<UserForm onRegister={handleUserSubmit} />}
+            />
 
-          {/* common routes */}
-          <Route
-            exact
-            path="/logout"
-            element={
-              // <Protected>
-              <Logout />
-              // </Protected>
-            }
-          />
-          <Route
-            exact
-            path="/product-details/:id"
-            element={
-              // <Protected>
-              <ProductDetailsPage />
-              // </Protected>
-            }
-          />
-          <Route
-            exact
-            path="/map"
-            element={
-              // <Protected>
-              <MappedinMap />
-              // </Protected>
-            }
-          />
+            {/* common routes */}
+            <Route
+              exact
+              path="/logout"
+              element={
+                // <Protected>
+                <Logout />
+                // </Protected>
+              }
+            />
+            <Route
+              exact
+              path="/product-details/:id"
+              element={
+                // <Protected>
+                <ProductDetailsPage />
+                // </Protected>
+              }
+            />
+            <Route
+              exact
+              path="/map"
+              element={
+                // <Protected>
+                <MappedinMap />
+                // </Protected>
+              }
+            />
 
-          <Route path="/shop/:id" element={<ShopMenu />} />
-          <Route
-            exact
-            path="/food"
-            element={<OrderForm onOrderSubmit={handleOrderSubmit} />}
-          />
-          <Route path="/qr-code" element={<QRCodeComponent />} />
-          <Route path="/scan-result" element={<ScanResult />} />
-          <Route path="/admin/food-dashboard" element={<AdminDashboard />} />
-          <Route path="/all-orders" element={<AllOrdersPage />} />
-          <Route
-            path="/order-details/:orderId/:shopId"
-            element={<OrderDetailsPage />}
-          />
+            <Route path="/shop/:id" element={<ShopMenu />} />
+            <Route
+              exact
+              path="/food"
+              element={<OrderForm onOrderSubmit={handleOrderSubmit} />}
+            />
+            <Route path="/qr-code" element={<QRCodeComponent />} />
+            <Route path="/scan-result" element={<ScanResult />} />
+            <Route path="/admin/food-dashboard" element={<AdminDashboard />} />
+            <Route path="/all-orders" element={<AllOrdersPage />} />
+            <Route
+              path="/order-details/:orderId/:shopId"
+              element={<OrderDetailsPage />}
+            />
 
-          {/* <Route path="/order-details/:orderId" element={<OrderDetails />} /> */}
-        </Routes>
-      )}
-    </Router>
+            {/* <Route path="/order-details/:orderId" element={<OrderDetails />} /> */}
+          </Routes>
+        )}
+      </Router>
+    </>
   );
 }
 
