@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Typography, Box, Paper } from "@mui/material";
+import { Grid, Button, Typography, Box } from "@mui/material";
 import Timer from "./Timer";
 import axios from "axios";
 
@@ -142,35 +142,25 @@ const SlotSelector = ({ parkingUser }) => {
       <Grid container spacing={2}>
         {slots.map((slot) => (
           <Grid item xs={4} key={slot.number}>
-            <Paper
+            <Button
+              variant="contained"
+              fullWidth
+              disabled={
+                slot.status !== "empty" || parkingUser?.slotInfo?.booked
+              }
               onClick={() => handleBookSlot(slot.number)}
               sx={{
-                padding: 2,
                 backgroundColor:
                   slot.status === "empty"
                     ? "green"
                     : slot.status === "booked"
                     ? "yellow"
-                    : slot.status === "arduino_confirmed"
-                    ? "red"
-                    : "grey", // Default color for any other status (optional)
+                    : "red", // Default color for any other status (optional)
                 color: "white",
-                textAlign: "center",
-                cursor: "pointer",
-                borderRadius: 2,
-                boxShadow: 2,
-                transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  boxShadow: 6,
-                },
               }}
             >
-              <Typography variant="h6">Slot {slot.number}</Typography>
-              {slot.status !== "empty" && (
-                <Typography variant="body2">Status: {slot.status}</Typography>
-              )}
-            </Paper>
+              Slot {slot.number}
+            </Button>
           </Grid>
         ))}
       </Grid>
