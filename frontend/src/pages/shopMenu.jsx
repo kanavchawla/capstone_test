@@ -146,9 +146,9 @@ const ShopMenu = () => {
           <Typography variant="h4" align="center" gutterBottom>
             {shop.name} - Menu
           </Typography>
-          <Typography variant="body1" align="center" gutterBottom>
+          {/* <Typography variant="body1" align="center" gutterBottom>
             Location: {shop.location}
-          </Typography>
+          </Typography> */}
 
           <Grid container spacing={4}>
             {shop.menu.map((menuItem) => (
@@ -157,7 +157,7 @@ const ShopMenu = () => {
                   <CardContent>
                     <Typography variant="h6">{menuItem.item}</Typography>
                     <Typography variant="body2" color="textSecondary">
-                      ${menuItem.price.toFixed(2)}
+                      Rs. {menuItem.price.toFixed(2)}
                     </Typography>
                     <Box
                       display="flex"
@@ -195,7 +195,7 @@ const ShopMenu = () => {
               {Object.values(cart).map((item) => (
                 <ListItem key={item._id}>
                   <ListItemText
-                    primary={`${item.item} - $${item.price.toFixed(2)} x ${
+                    primary={`${item.item} - Rs. ${item.price.toFixed(2)} x ${
                       item.quantity
                     }`}
                   />

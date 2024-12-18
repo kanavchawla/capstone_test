@@ -5,6 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import React, { useState } from "react";
+import axios from "axios";
 import {
   LoginPage,
   SignupPage,
@@ -47,12 +48,15 @@ import { fetchWishlistByUserIdAsync } from "./features/wishlist/WishlistSlice";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import MappedinMap from "./pages/map";
 import ScanResult from "./pages/ScanResult";
-import OrderDetails from "./pages/orderDetailsPage"
-import theme from './pages/theme';
+import OrderDetails from "./pages/orderDetailsPage";
+import theme from "./pages/theme";
 // import { ThemeProvider } from '@mui/material/styles';
-import Parking3D from "./pages/parking";
 import AdminDashboard from "./pages/adminFood";
 import OrderDetailsPage from "./pages/orderDetailsPage";
+import UserForm from "./pages/parking/UserForm";
+import SlotSelector from "./pages/parking/SlotSelector";
+
+import { Grid } from "@mui/material";
 
 function App() {
   const dispatch = useDispatch();
@@ -86,6 +90,11 @@ function App() {
     }
   }, [loggedInUser]);
 
+  const [parkingUser, setParkingUser] = useState(null);
+
+  const handleUserSubmit = (userData) => {
+    setParkingUser(userData);
+  };
   return (
     <Router>
       {true && (
@@ -220,6 +229,28 @@ function App() {
             </>
           )}
 
+          <Route
+            exact
+            path="/parking"
+            element={
+              !parkingUser ? (
+                <UserForm onRegister={handleUserSubmit} />
+              ) : (
+                <SlotSelector parkingUser={parkingUser} />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/slot-selection"
+            element={<SlotSelector parkingUser={parkingUser} />}
+          />
+          <Route
+            exact
+            path="/user-form"
+            element={<UserForm onRegister={handleUserSubmit} />}
+          />
+
           {/* common routes */}
           <Route
             exact
@@ -257,10 +288,13 @@ function App() {
           />
           <Route path="/qr-code" element={<QRCodeComponent />} />
           <Route path="/scan-result" element={<ScanResult />} />
-          <Route path="/admin/food-dashboard" element={<AdminDashboard />} /> 
-          <Route path="/parking" element={<Parking3D />} /> 
+          <Route path="/admin/food-dashboard" element={<AdminDashboard />} />
           <Route path="/all-orders" element={<AllOrdersPage />} />
-          <Route path="/order-details/:orderId/:shopId" element={<OrderDetailsPage />} />
+          <Route
+            path="/order-details/:orderId/:shopId"
+            element={<OrderDetailsPage />}
+          />
+
           {/* <Route path="/order-details/:orderId" element={<OrderDetails />} /> */}
         </Routes>
       )}

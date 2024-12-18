@@ -42,7 +42,9 @@ const QRCodePage = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/orders/${shopId}/${orderId}`);
+        const response = await fetch(
+          `http://localhost:8000/orders/${shopId}/${orderId}`
+        );
         if (!response.ok) {
           throw new Error(`Error fetching order: ${response.status}`);
         }
@@ -50,12 +52,14 @@ const QRCodePage = () => {
         setOrderDetails(data);
 
         // Fetch the status from the new endpoint
-        const statusResponse = await fetch(`http://localhost:8000/status/${orderId}`);
+        const statusResponse = await fetch(
+          `http://localhost:8000/status/${orderId}`
+        );
         if (!statusResponse.ok) {
           throw new Error(`Error fetching status: ${statusResponse.status}`);
         }
         const statusData = await statusResponse.json();
-        
+
         // Map string status to index
         const statusIndex = orderStages.indexOf(statusData.status);
         setOrderStatus(statusIndex === -1 ? 0 : statusIndex); // Default to 0 if status is invalid
@@ -75,7 +79,9 @@ const QRCodePage = () => {
       // Polling for status updates
       const intervalId = setInterval(async () => {
         try {
-          const statusResponse = await fetch(`http://localhost:8000/status/${orderId}`);
+          const statusResponse = await fetch(
+            `http://localhost:8000/status/${orderId}`
+          );
           if (!statusResponse.ok) {
             throw new Error(`Error fetching status: ${statusResponse.status}`);
           }
@@ -161,7 +167,8 @@ const QRCodePage = () => {
                   fontWeight: index === orderStatus ? "bold" : "normal",
                 }}
               >
-                {label.charAt(0).toUpperCase() + label.slice(1)} {/* Capitalize first letter */}
+                {label.charAt(0).toUpperCase() + label.slice(1)}{" "}
+                {/* Capitalize first letter */}
               </StepLabel>
             </HighlightedStep>
           ))}
@@ -178,14 +185,14 @@ const QRCodePage = () => {
             <ListItem key={item._id}>
               <ListItemText
                 primary={`${item.item} x ${item.quantity}`}
-                secondary={`Price: $${item.price.toFixed(2)}`}
+                secondary={`Price: Rs. ${item.price.toFixed(2)}`}
               />
             </ListItem>
           ))}
         </List>
         <Divider />
         <Typography variant="h6" align="right" mt={2}>
-          Total Amount: ${calculateTotalAmount().toFixed(2)}
+          Total Amount: Rs. {calculateTotalAmount().toFixed(2)}
         </Typography>
       </Box>
     </Container>

@@ -22,6 +22,16 @@ const ShopDetails = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Add navigation hook
 
+  // Predefined image array with specific images for first two shops
+  const imageUrls = [
+    { name: "sweet", url: "../assets/sweet.jpeg" },
+    { name: "pizza", url: "../assets/pizza.jpeg" },
+    { name: "pasta", url: "../assets/pasta.jpeg" },
+    { name: "taco", url: "../assets/taco.jpeg" },
+    { name: "sushi", url: "../assets/sushi.jpeg" },
+    { name: "burger", url: "../assets/burger.jpeg" },
+  ];
+
   useEffect(() => {
     const fetchShops = async () => {
       try {
@@ -69,30 +79,38 @@ const ShopDetails = () => {
         Explore Restaurants
       </Typography>
 
-      <Grid container spacing={4}>
-        {shops.map((shop) => (
-          <Grid item key={shop._id} xs={12} sm={6} md={4}>
-            <Card
-              onClick={() => navigate(`/shop/${shop._id}`)} // Redirect on card click
-              style={{ cursor: "pointer" }} // Make card clickable
-            >
-              <CardMedia
-                component="img"
-                height="140"
-                image={`https://via.placeholder.com/250?text=${shop.name}`}
-                alt={shop.name}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {shop.name}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {shop.location}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+      <Grid container spacing={6}>
+        {shops.map((shop, index) => {
+          // Use predefined image URLs for the first two shops
+          const imageUrl =
+            index < imageUrls.length
+              ? imageUrls[index].url
+              : `https://via.placeholder.com/250?text=${shop.name}`;
+
+          return (
+            <Grid item key={shop._id} xs={12} sm={6} md={4}>
+              <Card
+                onClick={() => navigate(`/shop/${shop._id}`)} // Redirect on card click
+                style={{ cursor: "pointer" }} // Make card clickable
+              >
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={imageUrl}
+                  alt={shop.name}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {shop.name}
+                  </Typography>
+                  {/* <Typography variant="body2" color="textSecondary">
+                    {shop.location}
+                  </Typography> */}
+                </CardContent>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
     </Container>
   );

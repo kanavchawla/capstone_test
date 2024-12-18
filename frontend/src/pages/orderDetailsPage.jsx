@@ -23,7 +23,9 @@ const OrderDetailsPage = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/orders/${shopId}/${orderId}`);
+        const response = await fetch(
+          `http://localhost:8000/orders/${shopId}/${orderId}`
+        );
         if (!response.ok) {
           throw new Error("Error fetching order details");
         }
@@ -74,7 +76,7 @@ const OrderDetailsPage = () => {
             <ListItem key={item._id}>
               <ListItemText
                 primary={`${item.item} x ${item.quantity}`}
-                secondary={`Price: $${item.price.toFixed(2)}`}
+                secondary={`Price: Rs. ${item.price.toFixed(2)}`}
               />
             </ListItem>
           ))}
@@ -83,10 +85,10 @@ const OrderDetailsPage = () => {
         <Divider />
 
         <Typography variant="h6" align="right" mt={2}>
-          Total Amount: ${orderDetails.items.reduce(
-            (total, item) => total + item.price * item.quantity,
-            0
-          ).toFixed(2)}
+          Total Amount: Rs.{" "}
+          {orderDetails.items
+            .reduce((total, item) => total + item.price * item.quantity, 0)
+            .toFixed(2)}
         </Typography>
       </Box>
 
