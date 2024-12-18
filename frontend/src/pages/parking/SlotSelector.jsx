@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Button, Typography, Box } from "@mui/material";
+import { Grid, Typography, Box, Button } from "@mui/material"; // Ensure Button is imported
 import Timer from "./Timer";
 import axios from "axios";
 
@@ -11,14 +11,18 @@ const SlotSelector = ({ parkingUser }) => {
   const targetLocation = { lat: 30.353815, lon: 76.367822 }; // Target location coordinates
   const radius = 1; // 1km radius
 
+  // Polling interval in milliseconds
+  const POLLING_INTERVAL = 5000;
+
   useEffect(() => {
     if (parkingUser) {
+      // Initial fetch
       fetchSlots();
 
-      // Update slots every 5 seconds
-      const intervalId = setInterval(fetchSlots, 5000); // 5 seconds
+      // Set up polling
+      const pollingInterval = setInterval(fetchSlots, POLLING_INTERVAL);
 
-      return () => clearInterval(intervalId); // Clean up interval on unmount
+      return () => clearInterval(pollingInterval); // Clean up on unmount
     }
   }, [parkingUser]);
 
@@ -55,7 +59,6 @@ const SlotSelector = ({ parkingUser }) => {
         }
       );
 
-      // Ensure duration is valid
       const bookedSlot = response.data;
       const duration = bookedSlot.duration ? bookedSlot.duration : 5; // Fallback to 5 minutes if duration is not available
 
@@ -80,14 +83,12 @@ const SlotSelector = ({ parkingUser }) => {
     }
   };
 
-  // Check if the user is within the target location radius
   const checkUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const userLat = position.coords.latitude;
         const userLon = position.coords.longitude;
 
-        // Calculate distance from the target location
         const distance = calculateDistance(
           userLat,
           userLon,
@@ -95,18 +96,13 @@ const SlotSelector = ({ parkingUser }) => {
           targetLocation.lon
         );
 
-        if (distance <= radius) {
-          setIsWithinRange(true);
-        } else {
-          setIsWithinRange(false);
-        }
+        setIsWithinRange(distance <= radius);
       });
     } else {
       alert("Geolocation is not supported by this browser.");
     }
   };
 
-  // Function to calculate distance between two points in km
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const toRadians = (deg) => deg * (Math.PI / 180);
     const R = 6371; // Radius of the Earth in km
@@ -119,8 +115,7 @@ const SlotSelector = ({ parkingUser }) => {
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in km
-    return distance;
+    return R * c; // Distance in km
   };
 
   useEffect(() => {
@@ -129,7 +124,39 @@ const SlotSelector = ({ parkingUser }) => {
     }
   }, [parkingUser]);
 
-  // Check if parkingUser is available before rendering the component
+  const getSlotContent = (status, slotNumber) => {
+    switch (status) {
+      case "booked":
+        return (
+          <iframe
+            src="https://lottie.host/embed/75ca03f5-00f5-4da2-8cc7-f4b9b587d577/rNZ1AB2Og3.lottie"
+            style={{
+              height: "100%", // Fit the iframe within the button
+              width: "100%",  // Fit the iframe within the button
+              border: "none",
+            }}
+            title={`Slot ${slotNumber} Booked`}
+          />
+        );
+      case "empty":
+        return `Slot ${slotNumber}`;
+      case "aurdino_booked":
+        return (
+          <iframe
+            src="https://lottie.host/embed/57f8652c-baf1-4e68-b81f-9d0398546b1f/dadlGEGXWr.lottie"
+            style={{
+              height: "100%", // Fit the iframe within the button
+              width: "100%",  // Fit the iframe within the button
+              border: "none",
+            }}
+            title={`Slot ${slotNumber} Aurduino Booked`}
+          />
+        );
+      default:
+        return "Unknown";
+    }
+  };
+
   if (!parkingUser) {
     return <Typography variant="h6">Loading...</Typography>;
   }
@@ -139,27 +166,30 @@ const SlotSelector = ({ parkingUser }) => {
       <Typography variant="h5" gutterBottom>
         Welcome, {parkingUser.name}! Select a Slot Below:
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} direction="column"> {/* Changed to column direction */}
         {slots.map((slot) => (
-          <Grid item xs={4} key={slot.number}>
+          <Grid item key={slot.number}> {/* Removed xs={4} to fit slots vertically */}
             <Button
               variant="contained"
               fullWidth
-              disabled={
-                slot.status !== "empty" || parkingUser?.slotInfo?.booked
-              }
+              disabled={slot.status !== "empty" || parkingUser?.slotInfo?.booked}
               onClick={() => handleBookSlot(slot.number)}
               sx={{
-                backgroundColor:
-                  slot.status === "empty"
-                    ? "green"
-                    : slot.status === "booked"
-                    ? "yellow"
-                    : "red", // Default color for any other status (optional)
+                backgroundColor: slot.status === "empty" ? "green" : "gray",
                 color: "white",
+                height: 200, // Increased height
+                width: "50%", // Reduced width
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 2, // Optional: For rounded corners
+                padding: 0, // Remove padding for better iframe fit
+                marginBottom: 2, // Added spacing between buttons
+                marginLeft: "auto", // Center button horizontally
+                marginRight: "auto", // Center button horizontally
               }}
             >
-              Slot {slot.number}
+              {getSlotContent(slot.status, slot.number)}
             </Button>
           </Grid>
         ))}
